@@ -97,6 +97,41 @@ git clone git@github.com:sergeyklay/phpenv-config-add.git ~/.phpenv/plugins/phpe
 git clone git@github.com:sergeyklay/phpenv-pear-setup.git ~/.phpenv/plugins/phpenv-pear-setup
 ```
 
+## zshrc setting
+```sh
+# phpenv
+export PATH="$HOME/.phpenv/bin:$PATH"
+eval "$(phpenv init -)"
+
+phpenv_rehash() {
+   local version=$1
+
+   echo "phpenv global $version && phpenv rehash"
+   phpenv global $version && phpenv rehash
+}
+
+phpenv_pecl_rehash() {
+   local version=$1
+
+   phpenv pear-setup
+
+   export PHP_PEAR_PHP_BIN=$(phpenv which php)
+   echo "PHP_PEAR_PHP_BIN=$(phpenv which php)"
+
+   echo "pecl install --force redis"
+   printf "\n" | pecl install --force redis
+   #printf "\n" | pecl install --force redis 1> /dev/null
+
+   if [[ $version == "8.2" || $version > "8.2" ]]; then
+       echo "pecl install --force mongodb"
+       printf "\n" | pecl install --force mongodb
+       #printf "\n" | pecl install --force mongodb 1> /dev/null
+   fi
+
+   return
+}
+```
+
 ## Usage
 
 ```sh
@@ -262,30 +297,4 @@ printf "\n" | pecl install --force msgpack 1> /dev/null
 printf "\n" | pecl install --force memcached 1> /dev/null
 printf "\n" | pecl install --force psr 1> /dev/null
 printf "\n" | pecl install --force apcu_bc 1> /dev/null
-```
-
-### zsh
-```sh
-# phpenv
-export PATH="$HOME/.phpenv/bin:$PATH"
-eval "$(phpenv init -)"
-
-phpenv_rehash() {
-   local version=$1
-   echo "phpenv global $version && phpenv rehash"
-   phpenv global $version && phpenv rehash
-}
-
-phpenv_pecl_rehash() {
-   phpenv pear-setup
-
-   export PHP_PEAR_PHP_BIN=$(phpenv which php)
-   echo "PHP_PEAR_PHP_BIN=$(phpenv which php)"
-
-   echo "pecl install --force redis"
-   pecl install --force redis
-   echo "pecl install --force mongodb"
-   pecl install --force mongodb
-   return
-}
 ```
