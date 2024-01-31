@@ -263,3 +263,29 @@ printf "\n" | pecl install --force memcached 1> /dev/null
 printf "\n" | pecl install --force psr 1> /dev/null
 printf "\n" | pecl install --force apcu_bc 1> /dev/null
 ```
+
+### zsh
+```sh
+# phpenv
+export PATH="$HOME/.phpenv/bin:$PATH"
+eval "$(phpenv init -)"
+
+phpenv_rehash() {
+   local version=$1
+   echo "phpenv global $version && phpenv rehash"
+   phpenv global $version && phpenv rehash
+}
+
+phpenv_pecl_rehash() {
+   phpenv pear-setup
+
+   export PHP_PEAR_PHP_BIN=$(phpenv which php)
+   echo "PHP_PEAR_PHP_BIN=$(phpenv which php)"
+
+   echo "pecl install --force redis"
+   pecl install --force redis
+   echo "pecl install --force mongodb"
+   pecl install --force mongodb
+   return
+}
+```
